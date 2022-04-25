@@ -67,11 +67,18 @@ func main() {
 
 	events.Opened = func(c evio.Conn) (out []byte, opts evio.Options, action evio.Action) {
 		c.SetContext(&evio.InputStream{})
+		is := c.Context().(*evio.InputStream)
+		data := is.Begin([]byte("open"))
+		is.End(data)
 		//log.Printf("opened: laddr: %v: raddr: %v", c.LocalAddr(), c.RemoteAddr())
 		return
 	}
 
 	events.Closed = func(c evio.Conn, err error) (action evio.Action) {
+
+		is := c.Context().(*evio.InputStream)
+		data := is.Begin([]byte("close"))
+		is.End(data)
 		//log.Printf("closed: %s: %s", c.LocalAddr().String(), c.RemoteAddr().String())
 		return
 	}
